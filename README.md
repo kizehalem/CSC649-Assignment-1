@@ -19,6 +19,6 @@ Managing Type 1 Diabetes requires complex clinical decisions regarding insulin d
 ## Author
 **Abdul Halim bin Jamil**  
 - **Student ID:** 2025240164  
-- **Group:** 2305E  
+- **Group:** CS2305E  
 - **Course:** CSC649 — Special Topics in Computer Science  
 - **Institution:** Universiti Teknologi MARA (UiTM)
