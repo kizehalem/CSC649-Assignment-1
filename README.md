@@ -22,3 +22,4 @@ Managing Type 1 Diabetes requires complex clinical decisions regarding insulin d
 - **Group:** CS2305E  
 - **Course:** CSC649 — Special Topics in Computer Science  
 - **Institution:** Universiti Teknologi MARA (UiTM)
+- **GitHub:** https://github.com/kizehalem
