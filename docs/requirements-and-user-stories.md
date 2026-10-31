@@ -1,32 +1,29 @@
 # Part B: Requirements and User Stories
 
 ## B1. Functional Requirements
-- **FR1:** The system shall parse and ingest raw Continuous Glucose Monitoring (CGM) data in standard CSV or JSON formats.
-- **FR2:** The system shall calculate clinical glycemic metrics including Time-in-Range (TIR %), Time-Below-Range (TBR %), and Coefficient of Variation (CV %).
-- **FR3:** The system shall generate visual alerts when nocturnal hypoglycemia patterns (blood glucose < 3.9 mmol/L between 00:00 and 06:00) are detected.
-- **FR4:** The system shall suggest clinical adjustments for Insulin-to-Carbohydrate Ratios (ICR) and Insulin Sensitivity Factors (ISF) based on postprandial glucose trends.
-- **FR5:** The system shall display a real-time risk score for Diabetic Ketoacidosis (DKA) when persistent hyperglycemia (>13.9 mmol/L) coincides with elevated blood ketones.
-- **FR6:** The system shall export clinical decision summary reports into standard PDF format for medical record archiving.
+
+| Req ID | Requirement Description ("The system shall...") | Testability Method |
+| :--- | :--- | :--- |
+| **FR1** | The system shall parse standardized CGM export files (CSV/JSON) and extract 14-day AGP metrics including Time-in-Range (TIR 3.9–10.0 mmol/L), Time-Below-Range (TBR < 3.9 mmol/L), and Coefficient of Variation (CV%). | Automated unit test with sample CGM datasets containing known AGP values. |
+| **FR2** | The system shall trigger a high-priority nocturnal hypoglycemia alert whenever two or more readings < 3.9 mmol/L occur between 00:00 and 06:00 within a 14-day window. | Integration testing with simulated midnight glucose drops. |
+| **FR3** | The system shall calculate and suggest Insulin-to-Carbohydrate Ratio (ICR) adjustments when postprandial glucose excursions exceed 10.0 mmol/L for 3 consecutive days at a specific mealtime. | Boundary value analysis comparing calculated suggestions against expert rule baseline. |
+| **FR4** | The system shall display a prominent visual warning indicator on the clinical dashboard whenever patient Glucose Variability (CV%) exceeds 36%. | UI visual verification test under high CV% input conditions. |
+| **FR5** | The system shall generate evidence-based Insulin Sensitivity Factor (ISF) correction advice when persistent post-correction hyperglycemia is detected. | Rule engine verification test using post-correction glucose logs. |
+| **FR6** | The system shall log all clinician interactions (Accept, Modify, Reject) with associated justification reason codes into an immutable clinical audit table. | Database audit trail inspection following simulated clinician decision entry. |
 
 ## B2. Non-Functional Requirements
-- **NFR1 (Performance):** The system shall process 14 days of high-density CGM data and render calculated metrics within 3 seconds.
-- **NFR2 (Security):** The system shall encrypt all stored patient health information (PHI) at rest using AES-256 encryption.
-- **NFR3 (Usability):** The system interface shall allow clinicians to review and accept/reject insulin suggestions within 3 button clicks.
-- **NFR4 (Reliability):** The system rule engine shall achieve 99.9% operational uptime during standard hospital operating hours.
 
-## B3. User Stories
-1. **US1:** As an endocrinologist, I want the system to flag nocturnal hypoglycemia patterns automatically, so that I can reduce basal insulin doses to protect patient safety during sleep.
-   - **Linked Requirement:** FR3
-   - **Acceptance Criteria:**
-     1. Highlight glucose timestamps below 3.9 mmol/L occurring between 00:00 and 06:00.
-     2. Display a red visual warning banner on the main clinician dashboard.
-2. **US2:** As a primary care doctor, I want suggested adjustments for ICR and ISF parameters, so that I can optimize post-meal insulin dosing without manual mathematical calculations.
-   - **Linked Requirement:** FR4
-   - **Acceptance Criteria:**
-     1. Display recommended ICR/ISF values alongside current patient settings.
-     2. Provide a single-click action to accept or modify the recommended dosage.
-3. **US3:** As a diabetes nurse educator, I want automated Time-in-Range (TIR) metric summaries, so that I can quickly evaluate therapy progress during follow-up visits.
-   - **Linked Requirement:** FR2
-   - **Acceptance Criteria:**
-     1. Display target percentage breakdown (TIR, TBR, TAR) in visual charts.
-     2. Generate an exportable summary report.
+| NFR ID | NFR Type | Measurable Standard / Condition | Verification Method |
+| :--- | :--- | :--- | :--- |
+| **NFR1** | **Performance** | The system shall parse a 14-day CGM dataset (2,016 data points) and render the summary screen within 2.0 seconds of patient record selection. | Automated performance benchmarking tool. |
+| **NFR2** | **Usability** | The clinical interface shall allow clinicians to review AGP summary alerts and finalize insulin parameter changes in 3 or fewer user clicks. | Usability testing with 5 clinicians measuring click-paths. |
+| **NFR3** | **Security & Privacy** | The system shall encrypt all patient data at rest using AES-256 and in transit using TLS 1.3 protocol, complying with healthcare data protection standards. | Penetration testing and security audit verification. |
+| **NFR4** | **Reliability** | The decision engine rule evaluator shall maintain 99.9% service availability during scheduled operational clinic hours (08:00–18:00, Mon–Fri). | System uptime telemetry monitoring. |
+
+## B3. User Stories & Acceptance Criteria
+
+| ID | User Story Description | Linked Req | Testable Acceptance Criteria |
+| :--- | :--- | :--- | :--- |
+| **US1** | **As an** Endocrinologist,<br>**I want** an automated summary of CGM Time-in-Range and glucose variability metrics,<br>**So that** I can rapidly identify unstable T1DM patients during consultations. | FR1, FR4 | **1.** Selecting a patient displays TIR, TBR, TAR, and CV% metrics formatted according to international AGP presentation guidelines within 2 seconds.<br>**2.** If TBR > 4% or CV > 36%, a red alert badge is rendered on the header navigation bar. |
+| **US2** | **As a** Diabetes Nurse Educator,<br>**I want** the system to recommend Insulin-to-Carbohydrate Ratio (ICR) adjustments based on postprandial glucose spikes,<br>**So that** I can guide patients on dietary insulin matching. | FR3 | **1.** The decision module displays current vs. proposed ICR values alongside a breakdown of mealtime glucose trends.<br>**2.** The system forces a mandatory clinician action selection (Accept, Modify, or Override) with reason entry before saving. |
+| **US3** | **As an** Outpatient Clinician,<br>**I want** automated alerts for recurring nocturnal hypoglycemia,<br>**So that** I can reduce bedtime basal rates and prevent night-time hypoglycemic events. | FR2, FR5 | **1.** The system highlights any 14-day log containing ≥2 nocturnal low readings (< 3.9 mmol/L between 00:00–06:00).<br>**2.** Clicking the alert opens an expanded overnight glucose plot with a specific basal rate reduction recommendation (e.g., reduce 01:00–04:00 basal by 10%). |
